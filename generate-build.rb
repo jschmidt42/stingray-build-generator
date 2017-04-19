@@ -98,10 +98,6 @@ def compress(path, dest)
 	end
 end
 
-if opts[:name] == nil
-	opts[:name] = "stingray_build"
-end
-
 if opts[:repo] == nil
 	raise ("Invalid repo path options")
 end
@@ -198,8 +194,11 @@ Dir.chdir(repo_directory) do
 	commit_date_short = `git show -s --format=%ad --date=short #{commit}`.strip
 	commit_date_long = Date.parse(`git show -s --format=%ad #{commit}`.strip)
 	folder_id = "#{commit}_#{commit_date_short}"
-	ENV['SR_PRODUCT_VERSION_REVISION'] = 42
 	ENV['SR_PRODUCT_BUILD_TIMESTAMP'] = commit_date_long.to_s
+
+	if opts[:name] == nil
+		opts[:name] = "stingray_#{commit}_#{commit_date_short}"
+	end
 
 	# Set build output directory
 	build_output_dir = File.join(output_directory, ".building", folder_id)
@@ -208,7 +207,7 @@ Dir.chdir(repo_directory) do
 	ENV['SR_BIN_DIR'] = build_output_dir
 
 	# Write signature file
-	make_cmd = "ruby make.rb --verbose --distrib --no-internal --no-exporters"
+	make_cmd = "ruby make.rb --verbose --distrib --no-internal --no-exporters --no-use-editor-templates"
 	make_cmd += " --no-remote-cache --engine --editor --output \"#{build_output_dir}\" #{opts.arguments.join(' ')}"
 
 	puts "Running #{make_cmd}"
@@ -248,11 +247,12 @@ Dir.chdir(repo_directory) do
 		zip_archieve_conf_filepath = File.join(build_output_dir, "stingray_achieve.conf")
 		File.open(zip_archieve_conf_filepath, "w") {|file| file.puts new_zip_config }
 
-		exe_output_path = (output_directory + "\\" + folder_id + ".exe").gsub('/', '\\')
+		exe_output_path = (output_directory + "\\#{opts[:name]}" + ".exe").gsub('/', '\\')
 		zip_cmd = "\"C:\\Program Files\\WinRAR\\WinRar.exe\" a " +
 			"-ap\"#{opts[:name]}\" -r -o+ -sfx -m5 -mt3 -ep1 " +
 			"-iicon\"#{File.join($script_dir, 'stingray_icon.ico').gsub('/', '\\')}\" " +
 			"-iimg\"#{File.join($script_dir, 'stingray_logo.bmp').gsub('/', '\\')}\" " +
+			"-x*.pdb -x*.map " +
 			"-z\"#{zip_archieve_conf_filepath.gsub('/', '\\')}\" " +
 			"-- \"#{exe_output_path}\" \"#{build_output_dir.gsub('/', '\\')}\\*.*\""
 		#puts zip_cmd

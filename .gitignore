@@ -3,5 +3,6 @@
 .libs/
 .building/
 .tmp/
-
+builds/**
 BUILD_*.TXT
+*.exe
