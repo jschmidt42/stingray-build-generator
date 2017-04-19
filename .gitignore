@@ -1,0 +1,7 @@
+
+# Build outputs
+.libs/
+.building/
+.tmp/
+
+BUILD_*.TXT
