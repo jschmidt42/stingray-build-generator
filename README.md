@@ -21,6 +21,7 @@ This build generator allows you to create your own Stingray developer builds qui
     -   Rubygems SSL fix (if needed): <http://guides.rubygems.org/ssl-certificate-update>
 -   Node.js and NPM: <https://nodejs.org/en/>
 -   DirectX End-User Runtimes (June 2010) : <http://www.microsoft.com/en-us/download/confirmation.aspx?id=8109>
+-   WinRar (Used to generate zip/exe archives): <http://www.rarlab.com/download.htm>
 
 ### Step 2. Clone this repo
 
@@ -30,7 +31,13 @@ This build generator allows you to create your own Stingray developer builds qui
 
 The build generator will need to know where your Stingray source repo is located.
 
+Make sure you do not have any unstaged files in your Stingray repo. If that is the case you can git reset in that repo using:
+
+> git reset --hard HEAD
+
 ### Step 4. Run the build generator
+
+**It is preferable to use a bash shell because of the dependency to *sed*.**
 
 > ruby generate-build.rb -r "G:\stingray" --zip --verbose
 
