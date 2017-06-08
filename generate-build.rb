@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # Generate a Stingray build for a specific commit
-# ./make.rb --distrib --no-internal --no-exporters --engine --editor
+# ./generate-build.rb -r "G:\stingray" --zip
 
 require 'find'
 require 'fileutils'
