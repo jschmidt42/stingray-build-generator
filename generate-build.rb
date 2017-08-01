@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # Generate a Stingray build for a specific commit
-# ./generate-build.rb -r "G:\stingray" --zip
+# Examples:
+# > ./generate-build.rb -r "G:\stingray" --zip
+# > ./generate-build.rb -r ../stingray -v --name stingray_release_2_0_0
 
 require 'find'
 require 'fileutils'
@@ -165,8 +167,10 @@ quotes = [
 Dir.chdir(repo_directory) do
 
 	# Check if no local changes
-	system( "git diff --quiet --exit-code" ) or raise("You have unstaged files at #{repo_directory}, quitting...")
-	system( "git ls-files --other --exclude-standard | sed q1" ) or raise("You have untracked files #{repo_directory}, quitting...")
+	system( "git diff --quiet --ignore-submodules=dirty --exit-code" ) or raise("You have unstaged files at #{repo_directory}, quitting...")
+	
+	# Check for untracked files (ignore for now)
+	#system( "git ls-files --other --exclude-standard | sed q1" ) or raise("You have untracked files #{repo_directory}, quitting...")
 
 	if !commit
 		commit = `git rev-parse --short HEAD`.strip
